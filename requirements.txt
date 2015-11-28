@@ -1,1 +1,9 @@
+ctypes
+getpass
+imghdr
+os
 praw
+urllib.request
+zipfile
+sys
+PIL
