@@ -7,6 +7,7 @@ Source code: https://github.com/DStewart1997/wallpaper-changer
 """
 
 import getpass
+import imghdr
 import os
 from sys import platform
 import urllib.request
@@ -36,6 +37,8 @@ class FileMgmt(object):
         if not os.path.exists(self.tmpdir):
             os.makedirs(self.tmpdir)
 
+fm = FileMgmt()
+
 
 class Downloader(object):
     """Parses various links to download images from them.
@@ -56,13 +59,28 @@ class Downloader(object):
         zip_ref.close()
 
         os.remove(fm.imagedir + zip_name)
-        os.rmdir(fm.tmpdir)
 
         print("Imgur album:", self.link)
 
     def download_imgur(self):
-        """Donwloads imgur links, detects links that don't have file
-        extensions and fixes them."""
+        """Downloads i.imgur.com links - these links don't have file
+        extensions so we have to add one (png) then when downloaded fix the
+        extension (eg. Change it from png to jpeg)."""
+
+        image_name = self.link.rpartition('/')[2]
+        urllib.request.urlretrieve(self.link + '.png', fm.tmpdir + image_name)
+
+        ext = imghdr.what(fm.tmpdir + image_name)  # The correct extension.
+        os.rename(fm.tmpdir + image_name, fm.imagedir +
+                  image_name.split('.')[0] + '.' + str(ext))
+
+        print("i.imgur:", self.link)
+
+    def download_i_imgur(self):
+        """Downloads regular imgur links."""
+
+        image_name = self.link.rpartition('/')[2]
+        urllib.request.urlretrieve(self.link, fm.imagedir + image_name)
 
         print("Regular imgur:", self.link)
 
@@ -78,9 +96,7 @@ class Downloader(object):
 user_agent = "Wallpaper switcher"
 subreddit = 'minimalwallpaper'
 r = praw.Reddit(user_agent=user_agent)
-submissions = r.get_subreddit(subreddit).get_hot(limit=50)
-
-fm = FileMgmt()
+submissions = r.get_subreddit(subreddit).get_hot(limit=25)
 
 images = []
 for submission in submissions:
@@ -89,9 +105,14 @@ for submission in submissions:
 for img in images:
     if "imgur.com/a" in img.link:
         Downloader.download_imgur_album(img)
+    elif "i.imgur.com" in img.link:
+        Downloader.download_i_imgur(img)
     elif "imgur.com" in img.link:
         Downloader.download_imgur(img)
     elif "deviantart.com" in img.link:
         Downloader.download_deviantart(img)
     else:
         print("Other:", img.link)
+
+# Remove tmpdir.
+os.rmdir(fm.tmpdir)
