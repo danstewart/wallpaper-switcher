@@ -1,6 +1,6 @@
-# WallpaperChanger
+# Wallpaper Switcher
 
-Wallpaper changer that will randomly set a new wallpaper from a selected subreddit every x minutes.
+Wallpaper switcher that will randomly set a new wallpaper from a selected subreddit every x minutes.
 
 ## Current Functionality
 - Download imgur links, imgur albums and deviantart posts from subreddit.
