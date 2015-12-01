@@ -1,5 +1,1 @@
-getpass
-imghdr
 praw
-urllib.request
-zipfile
