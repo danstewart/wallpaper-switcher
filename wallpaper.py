@@ -86,9 +86,9 @@ class Downloader(object):
 
     def download_deviantart(self):
         """Downloads images from DeviantArt links.
-        Gets the source code of the web page and parses line 347 to get direct
-        image link - seems to be reliable but a better method should be
-        used down the line."""
+        Old method of getting page source seems like an issue.
+        Line number of link has changed since original concept - will continue
+        to try out other methods."""
 
         print("Deviant Art:", self.link)
 
